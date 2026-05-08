@@ -1,44 +1,632 @@
-<!DOCTYPE HTML>
-<html>
-	<head>
-		<title>Siddhant Kumar Portfolio</title>
-		<meta charset="utf-8" />
-		<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
-		<link rel="stylesheet" href="assets/css/main.css" />
-		<noscript><link rel="stylesheet" href="assets/css/noscript.css" /></noscript>
-	</head>
-	<body class="is-preload">
-		<div id="wrapper">
-			<div id="bg"></div>
-			<div id="overlay"></div>
-			<div id="main">
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>siddhant@portfolio:~ —  zsh</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet" />
+<style>
+  :root {
+    /* Terminal "Pro" warm dark */
+    --bg: #1a1614;
+    --bg-2: #221d1a;
+    --bg-3: #2a2421;
+    --rule: #3a3330;
+    --text: #e8e0d3;
+    --dim: #8a807a;
+    --dim-2: #5a524d;
+    --green: #4eb872;
+    --yellow: #d4b262;
+    --cyan: #5fb8c8;
+    --magenta: #c47fb5;
+    --red: #d97a6a;
+    --blue: #6f9cd6;
+    --white: #f6f1e6;
+    --traffic-red: #ff5f57;
+    --traffic-yellow: #febc2e;
+    --traffic-green: #28c840;
+    --font-mono: "JetBrains Mono", "SF Mono", Menlo, monospace;
+  }
 
-				<!-- Header -->
-					<header id="header">
-						<h1>Siddhant Kumar</h1>
-						<p>iOS Developer <i class="fas fa-at"></i> <a href="https://www.travclan.com/">TravClan</a> &nbsp;|&nbsp; Blogger &nbsp;|&nbsp; Gamer</p>
-						<nav>
-							<ul>
-								<li><a href="https://twitter.com/its_me_siddhant" class="icon brands fa-twitter"><span class="label">Twitter</span></a></li>
-								<li><a href="https://www.linkedin.com/in/siddhantkr/" class="icon brands fa-linkedin"><span class="label">LinkedIn</span></a></li>
-								<li><a href="https://mobikul.com/author/siddhantkumar/" class="icon brands fa-blogger-b"><span class="label">Blog</span></a></li>
-								<li><a href="https://github.com/0xSiddhant" class="icon brands fa-github"><span class="label">Github</span></a></li>
-								<!-- <li><a href="" class="icon solid fa-envelope"><span class="label">Email</span></a></li> -->
-							</ul>
-						</nav>
-					</header>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body {
+    background: #0e0b0a;
+    color: var(--text);
+    font-family: var(--font-mono);
+    font-size: 13px;
+    line-height: 1.55;
+    height: 100vh;
+    overflow: hidden;
+    -webkit-font-smoothing: antialiased;
+  }
+  ::selection { background: var(--yellow); color: var(--bg); }
+  a { color: var(--cyan); text-decoration: none; border-bottom: 1px dotted var(--dim-2); }
+  a:hover { color: var(--yellow); border-bottom-color: var(--yellow); }
 
-				<!-- Footer -->
-					<footer id="footer">
-						
-					</footer>
+  /* Faint grid */
+  body::before {
+    content: "";
+    position: fixed;
+    inset: 0;
+    background-image:
+      linear-gradient(rgba(255,255,255,0.012) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(255,255,255,0.012) 1px, transparent 1px);
+    background-size: 32px 32px;
+    pointer-events: none;
+    z-index: 0;
+  }
 
-			</div>
-		</div>
-		<script>
-			window.onload = function() { document.body.classList.remove('is-preload'); }
-			window.ontouchmove = function() { return false; }
-			window.onorientationchange = function() { document.body.scrollTop = 0; }
-		</script>
-	</body>
+  .stage {
+    height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 24px;
+    position: relative;
+    z-index: 1;
+  }
+
+  /* ── Window ───────────────────────────────────────────── */
+  .window {
+    width: 100%;
+    max-width: 1180px;
+    height: 100%;
+    max-height: 760px;
+    background: var(--bg);
+    border-radius: 10px;
+    box-shadow:
+      0 30px 80px rgba(0,0,0,0.5),
+      0 1px 0 rgba(255,255,255,0.06) inset,
+      0 0 0 0.5px rgba(0,0,0,0.6);
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .titlebar {
+    flex: 0 0 auto;
+    display: flex;
+    align-items: center;
+    height: 28px;
+    background: linear-gradient(180deg, #3a322e 0%, #2c2522 100%);
+    padding: 0 12px;
+    position: relative;
+    border-bottom: 0.5px solid #000;
+  }
+  .lights { display: flex; gap: 8px; align-items: center; }
+  .light { width: 12px; height: 12px; border-radius: 50%; border: 0.5px solid rgba(0,0,0,0.25); }
+  .light.r { background: var(--traffic-red); }
+  .light.y { background: var(--traffic-yellow); }
+  .light.g { background: var(--traffic-green); }
+  .titlebar .title {
+    position: absolute; left: 0; right: 0;
+    text-align: center;
+    color: var(--dim);
+    font-size: 12px;
+    pointer-events: none;
+    font-weight: 500;
+  }
+
+  /* Tabs */
+  .tabs {
+    flex: 0 0 auto;
+    display: flex;
+    background: var(--bg-2);
+    border-bottom: 0.5px solid #000;
+    padding: 6px 8px 0;
+    gap: 2px;
+    overflow-x: auto;
+  }
+  .tabs::-webkit-scrollbar { display: none; }
+  .tab {
+    padding: 7px 16px;
+    font-size: 11px;
+    color: var(--dim);
+    background: transparent;
+    border: 1px solid transparent;
+    border-bottom: none;
+    border-radius: 6px 6px 0 0;
+    cursor: pointer;
+    white-space: nowrap;
+    user-select: none;
+    font-family: var(--font-mono);
+    transition: color 0.15s, background 0.15s;
+  }
+  .tab:hover { color: var(--text); }
+  .tab.active {
+    background: var(--bg);
+    color: var(--text);
+    border-color: var(--rule);
+    border-bottom: 1px solid var(--bg);
+    margin-bottom: -1px;
+  }
+  .tab .num { color: var(--dim-2); margin-right: 8px; }
+  .tab.active .num { color: var(--green); }
+
+  /* ── Body ─────────────────────────────────────────────── */
+  .body {
+    flex: 1 1 auto;
+    overflow: hidden;
+    position: relative;
+  }
+  .pane {
+    position: absolute;
+    inset: 0;
+    padding: 22px 28px 22px;
+    overflow-y: auto;
+    display: none;
+    scrollbar-width: thin;
+    scrollbar-color: var(--rule) transparent;
+  }
+  .pane::-webkit-scrollbar { width: 6px; }
+  .pane::-webkit-scrollbar-thumb { background: var(--rule); border-radius: 3px; }
+  .pane.active { display: block; animation: fadeIn 0.18s ease; }
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(2px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  /* Prompt + lines */
+  .prompt { color: var(--green); font-weight: 500; user-select: none; }
+  .prompt .at { color: var(--dim); }
+  .prompt .path { color: var(--magenta); }
+  .prompt .arr { color: var(--yellow); margin: 0 6px; }
+  .cmd { color: var(--text); }
+  .cmd .flag { color: var(--yellow); }
+  .cmd .str { color: var(--cyan); }
+
+  .line { white-space: pre-wrap; }
+  .out { color: var(--text); }
+  .out .dim { color: var(--dim); }
+  .out .key { color: var(--magenta); }
+  .out .val { color: var(--cyan); }
+  .out .num { color: var(--yellow); font-weight: 500; }
+  .out .ok { color: var(--green); }
+  .out .err { color: var(--red); }
+  .out .b { color: var(--white); font-weight: 500; }
+  .out .arr { color: var(--red); }
+  .out .ind { color: var(--dim-2); }
+
+  .block { margin: 4px 0 14px; }
+
+  /* ASCII banner — smaller for fit */
+  .banner {
+    color: var(--green);
+    font-size: 10px;
+    line-height: 1.15;
+    white-space: pre;
+    margin: 6px 0 14px;
+    text-shadow: 0 0 18px rgba(78, 184, 114, 0.25);
+  }
+  .banner .accent { color: var(--yellow); }
+
+  /* Box */
+  .box {
+    border: 1px solid var(--rule);
+    border-radius: 4px;
+    padding: 10px 14px;
+    margin: 6px 0;
+    background: rgba(255,255,255,0.015);
+  }
+  .box .b-head {
+    color: var(--yellow);
+    font-weight: 500;
+    margin-bottom: 6px;
+    display: flex;
+    justify-content: space-between;
+    gap: 16px;
+    flex-wrap: wrap;
+    font-size: 13px;
+  }
+  .box .b-head .at { color: var(--dim); font-weight: 400; font-size: 12px; }
+  .box ul.term-list { font-size: 12.5px; }
+
+  /* Metrics — 3×2 grid that fits in pane */
+  .metrics {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 10px;
+    margin: 6px 0;
+  }
+  .met {
+    border: 1px solid var(--rule);
+    padding: 12px 14px;
+    border-radius: 4px;
+    background: var(--bg-2);
+  }
+  .met .k {
+    color: var(--dim);
+    font-size: 10px;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    margin-bottom: 4px;
+  }
+  .met .v {
+    font-size: 22px;
+    font-weight: 500;
+    color: var(--white);
+    letter-spacing: -0.02em;
+    line-height: 1.1;
+  }
+  .met .v .delta { color: var(--yellow); }
+  .met .v .arr { color: var(--red); margin: 0 4px; }
+  .met .desc {
+    color: var(--dim);
+    font-size: 11.5px;
+    margin-top: 6px;
+    line-height: 1.45;
+  }
+
+  /* Cursor */
+  .cursor {
+    display: inline-block;
+    width: 8px;
+    height: 1em;
+    background: var(--green);
+    vertical-align: text-bottom;
+    margin-left: 2px;
+    animation: blink 1.05s steps(2) infinite;
+  }
+  @keyframes blink { 50% { opacity: 0; } }
+
+  /* Lists */
+  ul.term-list { list-style: none; padding-left: 18px; }
+  ul.term-list li { position: relative; padding: 1px 0; color: var(--text); }
+  ul.term-list li::before {
+    content: "›";
+    position: absolute; left: -14px;
+    color: var(--green);
+  }
+
+  /* Skills rows */
+  .skills .row {
+    display: grid;
+    grid-template-columns: 170px 1fr;
+    gap: 14px;
+    padding: 3px 0;
+    font-size: 12.5px;
+  }
+  .skills .row .k { color: var(--magenta); }
+  .skills .row .v .sep { color: var(--dim-2); margin: 0 6px; }
+
+  /* Contact rows */
+  .contact-rows .line { padding: 3px 0; }
+
+  /* Status bar at bottom of window */
+  .statusbar {
+    flex: 0 0 auto;
+    border-top: 0.5px solid #000;
+    background: var(--bg-2);
+    padding: 4px 14px;
+    font-size: 10.5px;
+    color: var(--dim);
+    display: flex;
+    justify-content: space-between;
+    gap: 12px;
+  }
+  .statusbar .left, .statusbar .right { display: flex; gap: 14px; }
+  .statusbar .ok { color: var(--green); }
+  .statusbar kbd {
+    background: var(--bg-3);
+    border: 1px solid var(--rule);
+    border-radius: 3px;
+    padding: 0 4px;
+    font-size: 10px;
+    color: var(--text);
+    font-family: var(--font-mono);
+  }
+
+  .footprompt { color: var(--dim); font-size: 12px; margin-top: 8px; }
+
+  /* Scrolling within pane shouldn't propagate look ugly */
+  hr.rule { border: none; border-top: 1px dashed var(--dim-2); margin: 14px 0 10px; }
+
+  #tweaks-root { position: fixed; bottom: 24px; right: 24px; z-index: 9999; }
+
+  @media (max-width: 800px) {
+    .stage { padding: 0; }
+    .window { max-height: none; border-radius: 0; }
+    .metrics { grid-template-columns: 1fr 1fr; }
+    .skills .row { grid-template-columns: 1fr; gap: 0; padding: 6px 0; }
+    .banner { font-size: 7.5px; }
+  }
+</style>
+</head>
+<body>
+
+<div class="stage">
+  <div class="window">
+
+    <!-- Titlebar -->
+    <div class="titlebar">
+      <div class="lights">
+        <span class="light r"></span>
+        <span class="light y"></span>
+        <span class="light g"></span>
+      </div>
+      <div class="title">siddhant@portfolio: ~ — -zsh — 132×38</div>
+    </div>
+
+    <!-- Tabs -->
+    <div class="tabs" id="tabs">
+      <div class="tab active" data-tab="about"><span class="num">1</span>~/about</div>
+      <div class="tab" data-tab="work"><span class="num">2</span>~/work</div>
+      <div class="tab" data-tab="skills"><span class="num">3</span>~/skills</div>
+      <div class="tab" data-tab="contact"><span class="num">4</span>~/contact</div>
+    </div>
+
+    <!-- Body / panes -->
+    <div class="body">
+
+      <!-- ABOUT -->
+      <section class="pane active" data-pane="about">
+        <div class="line out"><span class="dim">Last login: Fri May  8 09:42:11 on ttys000</span></div>
+        <div class="line"><span class="prompt"><span class="at">~</span> <span class="arr">❯</span></span> <span class="cmd">whoami <span class="flag">--full</span></span></div>
+        <pre class="banner">  ███████╗██╗██████╗ ██████╗ ██╗  ██╗ █████╗ ███╗   ██╗████████╗
+  ██╔════╝██║██╔══██╗██╔══██╗██║  ██║██╔══██╗████╗  ██║╚══██╔══╝
+  ███████╗██║██║  ██║██║  ██║███████║███████║██╔██╗ ██║   ██║
+  ╚════██║██║██║  ██║██║  ██║██╔══██║██╔══██║██║╚██╗██║   ██║
+  ███████║██║██████╔╝██████╔╝██║  ██║██║  ██║██║ ╚████║   ██║
+  ╚══════╝╚═╝╚═════╝ ╚═════╝ ╚═╝  ╚═╝╚═╝  ╚═╝╚═╝  ╚═══╝   ╚═╝   <span class="accent">K U M A R</span></pre>
+
+        <div class="line out"><span class="b">Siddhant Kumar</span> <span class="dim">// iOS Engineer · 6 yrs</span></div>
+        <div class="line out"><span class="dim">→ Sr. Software Engineer @</span> <span class="val">INDmoney</span> <span class="dim">·</span> <span class="dim">Gurugram, IN</span></div>
+        <br />
+        <div class="line"><span class="prompt"><span class="at">~</span> <span class="arr">❯</span></span> <span class="cmd">cat <span class="str">about.md</span></span></div>
+        <div class="block">
+          <div class="line out">iOS Engineer with <span class="num">6</span> years building <span class="b">high-scale applications</span> across</div>
+          <div class="line out">fintech, travel, and e-commerce. Proficient in <span class="key">MVVM</span>, <span class="key">VIPER</span>, and</div>
+          <div class="line out"><span class="key">Clean Architecture</span>, with deep expertise in performance-critical systems —</div>
+          <div class="line out">real-time socket infrastructure, mTLS networking, payload optimization,</div>
+          <div class="line out">and modular SwiftUI migration. Experienced leading iOS teams, owning</div>
+          <div class="line out">release health, and driving measurable improvements in API reliability,</div>
+          <div class="line out">crash rates, and developer velocity.</div>
+        </div>
+
+        <div class="line"><span class="prompt"><span class="at">~</span> <span class="arr">❯</span></span> <span class="cmd">uname <span class="flag">-a</span></span></div>
+        <div class="block">
+          <div class="line out"><span class="dim">role     </span> <span class="dim">=</span> Senior iOS Engineer</div>
+          <div class="line out"><span class="dim">location </span> <span class="dim">=</span> Gurugram, IN</div>
+          <div class="line out"><span class="dim">stack    </span> <span class="dim">=</span> <span class="val">Swift · SwiftUI · UIKit · Combine</span></div>
+          <div class="line out"><span class="dim">status   </span> <span class="dim">=</span> <span class="ok">[ open to senior &amp; lead iOS roles ]</span></div>
+        </div>
+        <div class="footprompt"><span class="prompt"><span class="at">~</span> <span class="arr">❯</span></span> <span class="cursor"></span></div>
+      </section>
+
+      <!-- WORK -->
+      <section class="pane" data-pane="work">
+        <div class="line"><span class="prompt"><span class="at">~/work</span> <span class="arr">❯</span></span> <span class="cmd">git log <span class="flag">--oneline --reverse</span> career/</span></div>
+        <div class="block">
+
+          <div class="box">
+            <div class="b-head"><span>* INDmoney <span class="at">— Senior SDE, iOS</span></span><span class="at">May 2025 → Now · Gurugram, IN</span></div>
+            <ul class="term-list">
+              <li>Built a resilient networking layer over <span class="key">URLSession</span> — mTLS, IPv6, retry/backoff, failover. <span class="num">93→95%</span> success.</li>
+              <li>Built a real-time socket system on <span class="key">NATS SDK</span> with WebSocket fallback for global position syncing.</li>
+              <li>Re-engineered the US Stocks <span class="key">trade engine</span> — order rejection <span class="num">3%→0.5%</span>.</li>
+              <li>Designed a dynamic <span class="key">feature-flag</span> system: rollouts, A/B tests, kill-switches.</li>
+              <li>Integrated <span class="key">Brotli</span> compression — <span class="num">60%+</span> payload reduction. Pioneered JS hot-reload (min → 10s).</li>
+            </ul>
+          </div>
+
+          <div class="box">
+            <div class="b-head"><span>* TravClan <span class="at">— Lead Engineer, iOS</span></span><span class="at">Mar 2022 → Apr 2025 · New Delhi, IN</span></div>
+            <ul class="term-list">
+              <li>Led <span class="num">4</span> engineers across iOS &amp; Flutter — shipped a B2C app for itineraries, vouchers, e-tickets.</li>
+              <li>Designed a <span class="key">VIPER</span> architecture with DI &amp; SOLID — enabled parallel feature dev.</li>
+              <li>Owned production metrics &amp; release health — <span class="num">99%</span> crash-free, App Store, staged rollouts.</li>
+              <li>Spearheaded core travel + fintech modules — flights, hotels, packages, payments, mods, cancellations.</li>
+              <li>Engineered CI/CD on <span class="key">GitHub Actions</span> for iOS &amp; Flutter — multi-env, SwiftLint enforcement.</li>
+            </ul>
+          </div>
+
+          <div class="box">
+            <div class="b-head"><span>* Webkul <span class="at">— iOS Developer</span></span><span class="at">Jun 2019 → Mar 2022 · Noida, IN</span></div>
+            <ul class="term-list">
+              <li>Designed &amp; shipped <span class="num">10+</span> production iOS apps — Magento 2, OpenCart, PrestaShop, CS-Cart.</li>
+              <li>Engineered a reusable <span class="key">modular component library</span> consumed across all client projects.</li>
+              <li>Led migration of <span class="key">Swift 2/3/4</span> codebases to Swift 5 — eliminated deprecated APIs, cut crashes.</li>
+            </ul>
+          </div>
+
+        </div>
+        <div class="footprompt"><span class="prompt"><span class="at">~/work</span> <span class="arr">❯</span></span> <span class="cursor"></span></div>
+      </section>
+
+      <!-- SKILLS -->
+      <section class="pane" data-pane="skills">
+        <div class="line"><span class="prompt"><span class="at">~/skills</span> <span class="arr">❯</span></span> <span class="cmd">printenv <span class="flag">|</span> grep <span class="str">"STACK_"</span></span></div>
+        <div class="block skills">
+          <div class="row"><span class="k">STACK_LANG     =</span><span class="v">Swift<span class="sep">·</span>SwiftUI<span class="sep">·</span>UIKit<span class="sep">·</span>Combine<span class="sep">·</span>GCD<span class="sep">·</span>NATS<span class="sep">·</span>URLSession<span class="sep">·</span>VIPER<span class="sep">·</span>MVVM</span></div>
+          <div class="row"><span class="k">STACK_NET      =</span><span class="v">REST<span class="sep">·</span>WebSocket<span class="sep">·</span>mTLS<span class="sep">·</span>Protobuf<span class="sep">·</span>Brotli<span class="sep">·</span>Core Data</span></div>
+          <div class="row"><span class="k">STACK_OBSERV   =</span><span class="v">Firebase<span class="sep">·</span>Crashlytics<span class="sep">·</span>New Relic<span class="sep">·</span>Mixpanel</span></div>
+          <div class="row"><span class="k">STACK_TOOLING  =</span><span class="v">Xcode<span class="sep">·</span>SPM<span class="sep">·</span>CocoaPods<span class="sep">·</span>Git<span class="sep">·</span>GitHub Actions<span class="sep">·</span>SwiftLint<span class="sep">·</span>Instruments<span class="sep">·</span>App Store Connect<span class="sep">·</span>TestFlight</span></div>
+          <div class="row"><span class="k">STACK_TEST     =</span><span class="v">XCTest<span class="sep">·</span>Swift Testing</span></div>
+          <div class="row"><span class="k">STACK_FAMILIAR =</span><span class="v">Flutter<span class="sep">·</span>Dart<span class="sep">·</span>Objective-C<span class="sep">·</span>JavaScript<span class="sep">·</span>Shell</span></div>
+        </div>
+
+        <hr class="rule" />
+
+        <div class="line"><span class="prompt"><span class="at">~/skills</span> <span class="arr">❯</span></span> <span class="cmd">cat <span class="str">edu.txt</span></span></div>
+        <div class="block">
+          <div class="line out"><span class="b">Greater Noida Institute of Technology (GNIOT)</span> <span class="dim">— Jun 2015 to Jun 2019</span></div>
+          <div class="line out"><span class="ind">  └─</span> B.Tech in Computer Science · Noida, UP, India</div>
+          <div class="line out"><span class="b">Jesus Mary Academy</span> <span class="dim">— Apr 2013 to Mar 2015</span></div>
+          <div class="line out"><span class="ind">  └─</span> 12th Grade · PCM</div>
+        </div>
+
+        <div class="footprompt"><span class="prompt"><span class="at">~/skills</span> <span class="arr">❯</span></span> <span class="cursor"></span></div>
+      </section>
+
+      <!-- CONTACT -->
+      <section class="pane" data-pane="contact">
+        <div class="line"><span class="prompt"><span class="at">~/contact</span> <span class="arr">❯</span></span> <span class="cmd">cat <span class="str">~/.contact</span></span></div>
+        <div class="block contact-rows">
+          <div class="line out"><span class="key">email   </span> <span class="dim">=</span> <a href="mailto:siddhantkr@icloud.com">siddhantkr@icloud.com</a></div>
+          <div class="line out"><span class="key">linkedin</span> <span class="dim">=</span> <a href="https://linkedin.com/in/siddhantkr" target="_blank" rel="noopener">linkedin.com/in/siddhantkr</a></div>
+          <div class="line out"><span class="key">github  </span> <span class="dim">=</span> <a href="https://github.com/0xSiddhant" target="_blank" rel="noopener">github.com/0xSiddhant</a></div>
+          <div class="line out"><span class="key">resume  </span> <span class="dim">=</span> <a href="uploads/Siddhant_Resume.pdf" target="_blank" rel="noopener">./Siddhant_Resume.pdf</a></div>
+          <div class="line out"><span class="key">location</span> <span class="dim">=</span> Gurugram, IN</div>
+          <div class="line out"><span class="key">status  </span> <span class="dim">=</span> <span class="ok">[ available for senior &amp; lead iOS roles ]</span></div>
+        </div>
+        <hr class="rule" />
+        <div class="line"><span class="prompt"><span class="at">~/contact</span> <span class="arr">❯</span></span> <span class="cmd">echo <span class="str">"got a hard iOS problem? let's talk."</span></span></div>
+        <div class="block">
+          <div class="line out">Got a hard iOS problem? Let's talk.</div>
+        </div>
+        <div class="footprompt"><span class="prompt"><span class="at">~/contact</span> <span class="arr">❯</span></span> <span class="cursor"></span></div>
+      </section>
+
+    </div>
+
+    <!-- Status bar -->
+    <div class="statusbar">
+      <div class="left">
+        <span><span class="ok">●</span> zsh 5.9</span>
+        <span>utf-8</span>
+        <span id="sb-tab">about</span>
+      </div>
+      <div class="right">
+        <span><kbd>1</kbd>–<kbd>4</kbd> switch tabs</span>
+        <span><kbd>←</kbd><kbd>→</kbd> navigate</span>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<div id="tweaks-root"></div>
+
+<!-- Tab switcher + keyboard nav -->
+<script>
+(function() {
+  const tabs = document.querySelectorAll('.tab');
+  const panes = document.querySelectorAll('.pane');
+  const sbTab = document.getElementById('sb-tab');
+  const order = Array.from(tabs).map(t => t.dataset.tab);
+
+  function show(name) {
+    tabs.forEach(t => t.classList.toggle('active', t.dataset.tab === name));
+    panes.forEach(p => p.classList.toggle('active', p.dataset.pane === name));
+    if (sbTab) sbTab.textContent = name;
+  }
+  tabs.forEach(t => t.addEventListener('click', () => show(t.dataset.tab)));
+
+  document.addEventListener('keydown', (e) => {
+    // Number shortcuts
+    if (e.key >= '1' && e.key <= '4') {
+      const idx = parseInt(e.key, 10) - 1;
+      if (order[idx]) show(order[idx]);
+      return;
+    }
+    // Arrow nav
+    const cur = order.findIndex(n => document.querySelector(`.pane[data-pane="${n}"]`).classList.contains('active'));
+    if (e.key === 'ArrowRight') show(order[(cur + 1) % order.length]);
+    if (e.key === 'ArrowLeft')  show(order[(cur - 1 + order.length) % order.length]);
+  });
+})();
+</script>
+
+<!-- React + Tweaks panel -->
+<script src="https://unpkg.com/react@18.3.1/umd/react.development.js" integrity="sha384-hD6/rw4ppMLGNu3tX5cjIb+uRZ7UkRJ6BPkLpg4hAu/6onKUg4lLsHAs9EBPT82L" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" integrity="sha384-u6aeetuaXnQ38mYT8rp6sbXaQe3NL9t+IBXmnYxwkUI2Hw4bsp2Wvmx4yRQF1uAm" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" integrity="sha384-m08KidiNqLdpJqLq95G/LEi8Qvjl/xUYll3QILypMoQ65QorJ9Lvtp2RXYGBFj1y" crossorigin="anonymous"></script>
+<script type="text/babel" src="tweaks-panel.jsx"></script>
+<script type="text/babel">
+  const TWEAK_DEFAULTS = /*EDITMODE-BEGIN*/{
+    "theme": "pro",
+    "fontSize": 13,
+    "scanlines": false
+  }/*EDITMODE-END*/;
+
+  const THEMES = {
+    pro:        { bg:"#1a1614", bg2:"#221d1a", bg3:"#2a2421", rule:"#3a3330", text:"#e8e0d3", dim:"#8a807a", green:"#4eb872", yellow:"#d4b262", cyan:"#5fb8c8", magenta:"#c47fb5", red:"#d97a6a", white:"#f6f1e6" },
+    homebrew:   { bg:"#000000", bg2:"#0a1a0a", bg3:"#0e220e", rule:"#1f3f1f", text:"#28e828", dim:"#1a8a1a", green:"#7eff7e", yellow:"#a8ff7e", cyan:"#7effc8", magenta:"#7effa8", red:"#ff7e7e", white:"#e8ffe8" },
+    novel:      { bg:"#dfdbc3", bg2:"#d4cfb1", bg3:"#c8c2a0", rule:"#a89e7e", text:"#3b2f2f", dim:"#7a6b5a", green:"#3a6e3a", yellow:"#8a6420", cyan:"#2e5e7a", magenta:"#6e3a6e", red:"#8a3a2a", white:"#1f1a1a" },
+    ocean:      { bg:"#101a26", bg2:"#152130", bg3:"#1a2a3a", rule:"#2a3e54", text:"#cfe1f0", dim:"#7891a8", green:"#6fc6a8", yellow:"#e3c07b", cyan:"#7ec8e3", magenta:"#c896e3", red:"#e08e7e", white:"#f0f7fb" }
+  };
+
+  function applyTheme(t) {
+    const r = document.documentElement;
+    r.style.setProperty('--bg', t.bg);
+    r.style.setProperty('--bg-2', t.bg2);
+    r.style.setProperty('--bg-3', t.bg3);
+    r.style.setProperty('--rule', t.rule);
+    r.style.setProperty('--text', t.text);
+    r.style.setProperty('--dim', t.dim);
+    r.style.setProperty('--dim-2', t.rule);
+    r.style.setProperty('--green', t.green);
+    r.style.setProperty('--yellow', t.yellow);
+    r.style.setProperty('--cyan', t.cyan);
+    r.style.setProperty('--magenta', t.magenta);
+    r.style.setProperty('--red', t.red);
+    r.style.setProperty('--white', t.white);
+  }
+
+  function PortfolioTweaks() {
+    const [tweaks, setTweak] = window.useTweaks(TWEAK_DEFAULTS);
+
+    React.useEffect(() => {
+      applyTheme(THEMES[tweaks.theme] || THEMES.pro);
+      document.body.style.fontSize = tweaks.fontSize + 'px';
+      let s = document.getElementById('__scanlines');
+      if (tweaks.scanlines) {
+        if (!s) {
+          s = document.createElement('div');
+          s.id = '__scanlines';
+          s.style.cssText = 'position:fixed;inset:0;pointer-events:none;z-index:9000;background:repeating-linear-gradient(0deg,rgba(0,0,0,0.18) 0,rgba(0,0,0,0.18) 1px,transparent 1px,transparent 3px);mix-blend-mode:multiply;';
+          document.body.appendChild(s);
+        }
+      } else if (s) { s.remove(); }
+    }, [tweaks.theme, tweaks.fontSize, tweaks.scanlines]);
+
+    return (
+      <window.TweaksPanel title="Tweaks">
+        <window.TweakSection title="Theme">
+          <window.TweakSelect
+            label="Profile"
+            value={tweaks.theme}
+            onChange={(v) => setTweak('theme', v)}
+            options={[
+              { value: 'pro',      label: 'Pro (warm dark)' },
+              { value: 'homebrew', label: 'Homebrew (green)' },
+              { value: 'novel',    label: 'Novel (paper)' },
+              { value: 'ocean',    label: 'Ocean (blue)' }
+            ]}
+          />
+        </window.TweakSection>
+        <window.TweakSection title="Type">
+          <window.TweakSlider
+            label="Font Size"
+            value={tweaks.fontSize}
+            onChange={(v) => setTweak('fontSize', v)}
+            min={11} max={16} step={1}
+            format={(v) => v + 'pt'}
+          />
+        </window.TweakSection>
+        <window.TweakSection title="Effects">
+          <window.TweakToggle
+            label="CRT Scanlines"
+            value={tweaks.scanlines}
+            onChange={(v) => setTweak('scanlines', v)}
+          />
+        </window.TweakSection>
+      </window.TweaksPanel>
+    );
+  }
+
+  const mount = () => {
+    if (!window.TweaksPanel || !window.useTweaks) {
+      requestAnimationFrame(mount);
+      return;
+    }
+    const root = ReactDOM.createRoot(document.getElementById('tweaks-root'));
+    root.render(<PortfolioTweaks />);
+  };
+  mount();
+</script>
+
+</body>
 </html>
