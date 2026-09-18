@@ -6,64 +6,197 @@
 <title>siddhant@portfolio:~ —  zsh</title>
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet" />
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+<meta name="theme-color" content="#06070b" />
+<script>
+  /* Resolve the theme before first paint so there is no light/dark flash. */
+  (function () {
+    var stored = null;
+    try { stored = localStorage.getItem('theme'); } catch (e) {}
+    var theme = stored || (window.matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark');
+    document.documentElement.setAttribute('data-theme', theme);
+  })();
+</script>
 <style>
+  /* ─────────────────────────────────────────────────────────
+     Design tokens — px0.ai-inspired
+     Deep blue-black surfaces, Tokyo Night syntax palette,
+     amber as the single accent, hairline borders, zero radius.
+     ───────────────────────────────────────────────────────── */
   :root {
-    /* Terminal "Pro" warm dark */
-    --bg: #1a1614;
-    --bg-2: #221d1a;
-    --bg-3: #2a2421;
-    --rule: #3a3330;
-    --text: #e8e0d3;
-    --dim: #8a807a;
-    --dim-2: #5a524d;
-    --green: #4eb872;
-    --yellow: #d4b262;
-    --cyan: #5fb8c8;
-    --magenta: #c47fb5;
-    --red: #d97a6a;
-    --blue: #6f9cd6;
-    --white: #f6f1e6;
-    --traffic-red: #ff5f57;
-    --traffic-yellow: #febc2e;
-    --traffic-green: #28c840;
-    --font-mono: "JetBrains Mono", "SF Mono", Menlo, monospace;
+    /* Surfaces */
+    --bg:          #06070b;
+    --bg-elev:     #0b0c12;
+    --panel:       #0d0e16;
+    --surface:     rgba(192,202,245,0.028);
+    --surface-2:   rgba(192,202,245,0.055);
+
+    /* Lines */
+    --bdr:         rgba(192,202,245,0.09);
+    --bdr-hi:      rgba(192,202,245,0.20);
+    --grid:        rgba(192,202,245,0.035);
+
+    /* Text */
+    --txt:         #e4e8f7;
+    --txt-2:       #9ba3c4;
+    --txt-3:       #686f93;
+    --txt-4:       #3a4060;
+
+    /* Accent */
+    --amber:       #fbbf24;
+    --amber-soft:  #fcd34d;
+    --amber-deep:  #f59e0b;
+    --amber-wash:  rgba(251,191,36,0.07);
+    --amber-line:  rgba(251,191,36,0.32);
+    --amber-glow:  rgba(251,191,36,0.30);
+
+    /* Syntax */
+    --cyan:        #7dcfff;
+    --blue:        #7aa2f7;
+    --violet:      #bb9af7;
+    --green:       #9ece6a;
+    --rose:        #f7768e;
+    --orange:      #ff9e64;
+
+    /* Window chrome */
+    --traffic-red:    #ff5f56;
+    --traffic-yellow: #ffbd2e;
+    --traffic-green:  #27c93f;
+    --shadow-float:   0 60px 140px -60px rgba(0,0,0,0.95);
+
+    /* Atmosphere */
+    --scan-opacity: 0.5;
+    --glow-opacity: 1;
+    --glow-a: rgba(251,191,36,0.09);
+    --glow-b: rgba(122,162,247,0.10);
+
+    /* Geometry — px0 is uncompromisingly square */
+    --r: 0px;
+
+    /* Type */
+    --font-mono: "JetBrains Mono", ui-monospace, "SF Mono", "Cascadia Code", Menlo, Consolas, monospace;
+    --track-caps: 0.14em;
+  }
+
+  :root[data-theme="light"] {
+    --bg:          #f4f5f8;
+    --bg-elev:     #ffffff;
+    --panel:       #ffffff;
+    --surface:     rgba(11,13,20,0.024);
+    --surface-2:   rgba(11,13,20,0.05);
+
+    --bdr:         rgba(11,13,20,0.10);
+    --bdr-hi:      rgba(11,13,20,0.22);
+    --grid:        rgba(11,13,20,0.043);
+
+    --txt:         #0b0d14;
+    --txt-2:       #454c5e;
+    --txt-3:       #6b7386;
+    --txt-4:       #b3b9c6;
+
+    --amber:       #b45309;
+    --amber-soft:  #d97706;
+    --amber-deep:  #92400e;
+    --amber-wash:  rgba(180,83,9,0.06);
+    --amber-line:  rgba(180,83,9,0.35);
+    --amber-glow:  rgba(180,83,9,0.20);
+
+    --cyan:        #0550ae;
+    --blue:        #0969da;
+    --violet:      #8250df;
+    --green:       #116329;
+    --rose:        #cf222e;
+    --orange:      #953800;
+
+    --shadow-float: 0 50px 100px -50px rgba(11,13,20,0.35);
+
+    --scan-opacity: 0.12;
+    --glow-opacity: 0.7;
+    --glow-a: rgba(180,83,9,0.07);
+    --glow-b: rgba(9,105,218,0.07);
   }
 
   * { box-sizing: border-box; margin: 0; padding: 0; }
+
   html, body {
-    background: #0e0b0a;
-    color: var(--text);
+    background: var(--bg);
+    color: var(--txt);
     font-family: var(--font-mono);
-    font-size: 13px;
+    font-size: clamp(12px, 0.42vw + 6.6px, 16px);
+    font-weight: 400;
     line-height: 1.55;
     height: 100vh;
     overflow: hidden;
     -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    font-variant-ligatures: none;
   }
-  ::selection { background: var(--yellow); color: var(--bg); }
-  a { color: var(--cyan); text-decoration: none; border-bottom: 1px dotted var(--dim-2); }
-  a:hover { color: var(--yellow); border-bottom-color: var(--yellow); }
 
-  /* Faint grid */
-  body::before {
-    content: "";
+  ::selection { background: var(--amber); color: var(--bg); }
+
+  a {
+    color: var(--amber);
+    text-decoration: none;
+    border-bottom: 1px solid var(--amber-line);
+    transition: color 0.15s, border-color 0.15s, background 0.15s;
+  }
+  a:hover {
+    color: var(--amber-soft);
+    border-bottom-color: var(--amber-soft);
+    background: var(--amber-wash);
+  }
+  a:focus-visible,
+  button:focus-visible,
+  .tab:focus-visible {
+    outline: 1px solid var(--amber);
+    outline-offset: 2px;
+  }
+
+  /* ── Atmosphere ───────────────────────────────────────────
+     Three flat layers behind the window: a masked grid, a pair
+     of soft radial washes, and optional CRT scanlines. */
+  .atmos {
     position: fixed;
     inset: 0;
-    background-image:
-      linear-gradient(rgba(255,255,255,0.012) 1px, transparent 1px),
-      linear-gradient(90deg, rgba(255,255,255,0.012) 1px, transparent 1px);
-    background-size: 32px 32px;
     pointer-events: none;
     z-index: 0;
+    overflow: hidden;
   }
+  .atmos-grid {
+    position: absolute;
+    inset: 0;
+    background-image:
+      linear-gradient(var(--grid) 1px, transparent 1px),
+      linear-gradient(90deg, var(--grid) 1px, transparent 1px);
+    background-size: 32px 32px;
+    -webkit-mask-image: radial-gradient(120% 70% at 50% 0%, #000 25%, transparent 80%);
+    mask-image: radial-gradient(120% 70% at 50% 0%, #000 25%, transparent 80%);
+  }
+  .atmos-glow {
+    position: absolute;
+    inset: -30% -10% auto;
+    height: 90vh;
+    opacity: var(--glow-opacity);
+    filter: blur(20px);
+    background:
+      radial-gradient(40% 40% at 22% 30%, var(--glow-a), transparent 70%),
+      radial-gradient(40% 40% at 80% 20%, var(--glow-b), transparent 72%);
+  }
+  .atmos-scan {
+    position: absolute;
+    inset: 0;
+    opacity: var(--scan-opacity);
+    background: repeating-linear-gradient(rgba(0,0,0,0.14) 0 1px, transparent 1px 3px);
+    display: none;
+  }
+  :root[data-scan="1"] .atmos-scan { display: block; }
 
   .stage {
     height: 100vh;
     display: flex;
     align-items: center;
     justify-content: center;
-    padding: 24px;
+    padding: clamp(10px, 2.2vh, 28px);
     position: relative;
     z-index: 1;
   }
@@ -71,15 +204,13 @@
   /* ── Window ───────────────────────────────────────────── */
   .window {
     width: 100%;
-    max-width: 1180px;
+    max-width: min(94vw, 92em);
     height: 100%;
-    max-height: 760px;
-    background: var(--bg);
-    border-radius: 10px;
-    box-shadow:
-      0 30px 80px rgba(0,0,0,0.5),
-      0 1px 0 rgba(255,255,255,0.06) inset,
-      0 0 0 0.5px rgba(0,0,0,0.6);
+    max-height: min(94vh, 62em);
+    background: var(--panel);
+    border: 1px solid var(--bdr);
+    border-radius: var(--r);
+    box-shadow: var(--shadow-float);
     overflow: hidden;
     display: flex;
     flex-direction: column;
@@ -89,61 +220,89 @@
     flex: 0 0 auto;
     display: flex;
     align-items: center;
-    height: 28px;
-    background: linear-gradient(180deg, #3a322e 0%, #2c2522 100%);
-    padding: 0 12px;
+    gap: 12px;
+    height: 30px;
+    background: var(--bg-elev);
+    padding: 0 10px 0 12px;
     position: relative;
-    border-bottom: 0.5px solid #000;
+    border-bottom: 1px solid var(--bdr);
   }
   .lights { display: flex; gap: 8px; align-items: center; }
-  .light { width: 12px; height: 12px; border-radius: 50%; border: 0.5px solid rgba(0,0,0,0.25); }
+  .light { width: 11px; height: 11px; border-radius: 50%; }
   .light.r { background: var(--traffic-red); }
   .light.y { background: var(--traffic-yellow); }
   .light.g { background: var(--traffic-green); }
   .titlebar .title {
     position: absolute; left: 0; right: 0;
     text-align: center;
-    color: var(--dim);
-    font-size: 12px;
-    pointer-events: none;
+    color: var(--txt-3);
+    font-size: 10.5px;
     font-weight: 500;
+    letter-spacing: 0.02em;
+    pointer-events: none;
+  }
+
+  /* Theme toggle — sits at the right edge of the titlebar */
+  .theme-toggle {
+    margin-left: auto;
+    position: relative;
+    z-index: 1;
+    appearance: none;
+    height: 20px;
+    padding: 0 9px;
+    border: 1px solid var(--bdr);
+    border-radius: var(--r);
+    background: transparent;
+    color: var(--txt-3);
+    font-family: var(--font-mono);
+    font-size: 9.5px;
+    font-weight: 500;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: color 0.15s, border-color 0.15s, background 0.15s;
+  }
+  .theme-toggle:hover {
+    color: var(--amber);
+    border-color: var(--amber-line);
+    background: var(--amber-wash);
   }
 
   /* Tabs */
   .tabs {
     flex: 0 0 auto;
     display: flex;
-    background: var(--bg-2);
-    border-bottom: 0.5px solid #000;
-    padding: 6px 8px 0;
-    gap: 2px;
+    background: var(--bg-elev);
+    border-bottom: 1px solid var(--bdr);
+    padding: 0 8px;
+    gap: 0;
     overflow-x: auto;
   }
   .tabs::-webkit-scrollbar { display: none; }
   .tab {
-    padding: 7px 16px;
+    padding: 8px 16px;
     font-size: 11px;
-    color: var(--dim);
+    font-weight: 500;
+    letter-spacing: 0.02em;
+    color: var(--txt-3);
     background: transparent;
-    border: 1px solid transparent;
-    border-bottom: none;
-    border-radius: 6px 6px 0 0;
+    border: 0;
+    border-bottom: 1px solid transparent;
+    border-radius: var(--r);
     cursor: pointer;
     white-space: nowrap;
     user-select: none;
     font-family: var(--font-mono);
-    transition: color 0.15s, background 0.15s;
+    transition: color 0.15s, background 0.15s, border-color 0.15s;
   }
-  .tab:hover { color: var(--text); }
+  .tab:hover { color: var(--txt); background: var(--surface); }
   .tab.active {
-    background: var(--bg);
-    color: var(--text);
-    border-color: var(--rule);
-    border-bottom: 1px solid var(--bg);
-    margin-bottom: -1px;
+    color: var(--txt);
+    background: var(--surface);
+    border-bottom-color: var(--amber);
   }
-  .tab .num { color: var(--dim-2); margin-right: 8px; }
-  .tab.active .num { color: var(--green); }
+  .tab .num { color: var(--txt-4); margin-right: 8px; }
+  .tab.active .num { color: var(--amber); }
 
   /* ── Body ─────────────────────────────────────────────── */
   .body {
@@ -154,117 +313,132 @@
   .pane {
     position: absolute;
     inset: 0;
-    padding: 22px 28px 22px;
+    padding: 20px 28px;
     overflow-y: auto;
     display: none;
     scrollbar-width: thin;
-    scrollbar-color: var(--rule) transparent;
+    scrollbar-color: var(--bdr-hi) transparent;
   }
-  .pane::-webkit-scrollbar { width: 6px; }
-  .pane::-webkit-scrollbar-thumb { background: var(--rule); border-radius: 3px; }
+  .pane::-webkit-scrollbar { width: 8px; }
+  .pane::-webkit-scrollbar-track { background: transparent; }
+  .pane::-webkit-scrollbar-thumb { background: var(--bdr-hi); border-radius: var(--r); }
   .pane.active { display: block; animation: fadeIn 0.18s ease; }
   @keyframes fadeIn {
     from { opacity: 0; transform: translateY(2px); }
-    to { opacity: 1; transform: translateY(0); }
+    to   { opacity: 1; transform: translateY(0); }
   }
 
   /* Prompt + lines */
-  .prompt { color: var(--green); font-weight: 500; user-select: none; }
-  .prompt .at { color: var(--dim); }
-  .prompt .path { color: var(--magenta); }
-  .prompt .arr { color: var(--yellow); margin: 0 6px; }
-  .cmd { color: var(--text); }
-  .cmd .flag { color: var(--yellow); }
-  .cmd .str { color: var(--cyan); }
+  .prompt { color: var(--amber); font-weight: 600; user-select: none; }
+  .prompt .at { color: var(--txt-3); font-weight: 400; }
+  .prompt .path { color: var(--violet); }
+  .prompt .arr { color: var(--amber); margin: 0 6px; }
+  .cmd { color: var(--txt); font-weight: 500; }
+  .cmd .flag { color: var(--amber); }
+  .cmd .str { color: var(--green); }
 
   .line { white-space: pre-wrap; }
-  .out { color: var(--text); }
-  .out .dim { color: var(--dim); }
-  .out .key { color: var(--magenta); }
+  .out { color: var(--txt-2); }
+  .out .dim { color: var(--txt-3); }
+  .out .key { color: var(--violet); }
   .out .val { color: var(--cyan); }
-  .out .num { color: var(--yellow); font-weight: 500; }
+  .out .num { color: var(--orange); font-weight: 600; letter-spacing: -0.01em; }
   .out .ok { color: var(--green); }
-  .out .err { color: var(--red); }
-  .out .b { color: var(--white); font-weight: 500; }
-  .out .arr { color: var(--red); }
-  .out .ind { color: var(--dim-2); }
+  .out .err { color: var(--rose); }
+  .out .b { color: var(--txt); font-weight: 600; }
+  .out .arr { color: var(--rose); }
+  .out .ind { color: var(--txt-4); }
 
   .block { margin: 4px 0 14px; }
 
-  /* ASCII banner — smaller for fit */
+  /* ASCII banner */
   .banner {
-    color: var(--green);
-    font-size: 10px;
+    color: var(--amber);
+    font-size: 0.77em;
+    font-weight: 400;
     line-height: 1.15;
+    letter-spacing: 0;
     white-space: pre;
-    margin: 6px 0 14px;
-    text-shadow: 0 0 18px rgba(78, 184, 114, 0.25);
+    margin: 8px 0 16px;
+    text-shadow: 0 0 18px var(--amber-glow);
   }
-  .banner .accent { color: var(--yellow); }
+  .banner .accent { color: var(--txt-3); }
 
   /* Box */
   .box {
-    border: 1px solid var(--rule);
-    border-radius: 4px;
+    border: 1px solid var(--bdr);
+    border-radius: var(--r);
     padding: 10px 14px;
-    margin: 6px 0;
-    background: rgba(255,255,255,0.015);
+    margin: 5px 0;
+    background: var(--surface);
+    transition: border-color 0.15s, background 0.15s;
   }
+  .box:hover { border-color: var(--bdr-hi); background: var(--surface-2); }
   .box .b-head {
-    color: var(--yellow);
-    font-weight: 500;
+    color: var(--amber);
+    font-weight: 700;
+    letter-spacing: -0.01em;
     margin-bottom: 6px;
+    padding-bottom: 6px;
+    border-bottom: 1px solid var(--bdr);
     display: flex;
     justify-content: space-between;
     gap: 16px;
     flex-wrap: wrap;
-    font-size: 13px;
+    font-size: 1em;
   }
-  .box .b-head .at { color: var(--dim); font-weight: 400; font-size: 12px; }
-  .box ul.term-list { font-size: 12.5px; }
+  .box .b-head .at {
+    color: var(--txt-3);
+    font-weight: 500;
+    font-size: 0.81em;
+    letter-spacing: var(--track-caps);
+    text-transform: uppercase;
+  }
+  .box ul.term-list { font-size: 0.96em; }
 
-  /* Metrics — 3×2 grid that fits in pane */
+  /* Metrics — uppercase key over a tight numeral, px0's stat block */
   .metrics {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
-    gap: 10px;
-    margin: 6px 0;
+    gap: 1px;
+    margin: 8px 0;
+    background: var(--bdr);
+    border: 1px solid var(--bdr);
   }
   .met {
-    border: 1px solid var(--rule);
-    padding: 12px 14px;
-    border-radius: 4px;
-    background: var(--bg-2);
+    padding: 14px;
+    background: var(--panel);
   }
   .met .k {
-    color: var(--dim);
-    font-size: 10px;
-    letter-spacing: 0.05em;
+    color: var(--txt-3);
+    font-size: 0.81em;
+    font-weight: 500;
+    letter-spacing: var(--track-caps);
     text-transform: uppercase;
-    margin-bottom: 4px;
+    margin-bottom: 6px;
   }
   .met .v {
-    font-size: 22px;
-    font-weight: 500;
-    color: var(--white);
-    letter-spacing: -0.02em;
-    line-height: 1.1;
+    font-size: 2em;
+    font-weight: 700;
+    color: var(--txt);
+    letter-spacing: -0.05em;
+    line-height: 1;
   }
-  .met .v .delta { color: var(--yellow); }
-  .met .v .arr { color: var(--red); margin: 0 4px; }
+  .met .v .delta { color: var(--amber); }
+  .met .v .arr { color: var(--txt-4); margin: 0 4px; }
   .met .desc {
-    color: var(--dim);
-    font-size: 11.5px;
-    margin-top: 6px;
-    line-height: 1.45;
+    color: var(--txt-3);
+    font-size: 0.88em;
+    margin-top: 8px;
+    line-height: 1.5;
   }
 
   /* Cursor */
   .cursor {
     display: inline-block;
-    width: 8px;
+    width: 7px;
     height: 1em;
-    background: var(--green);
+    background: var(--amber);
     vertical-align: text-bottom;
     margin-left: 2px;
     animation: blink 1.05s steps(2) infinite;
@@ -273,11 +447,11 @@
 
   /* Lists */
   ul.term-list { list-style: none; padding-left: 18px; }
-  ul.term-list li { position: relative; padding: 1px 0; color: var(--text); }
+  ul.term-list li { position: relative; padding: 1px 0; color: var(--txt-2); }
   ul.term-list li::before {
     content: "›";
     position: absolute; left: -14px;
-    color: var(--green);
+    color: var(--amber);
   }
 
   /* Skills rows */
@@ -286,55 +460,76 @@
     grid-template-columns: 170px 1fr;
     gap: 14px;
     padding: 3px 0;
-    font-size: 12.5px;
+    font-size: 0.96em;
+    border-bottom: 1px solid var(--bdr);
   }
-  .skills .row .k { color: var(--magenta); }
-  .skills .row .v .sep { color: var(--dim-2); margin: 0 6px; }
+  .skills .row:last-child { border-bottom: 0; }
+  .skills .row .k { color: var(--violet); }
+  .skills .row .v { color: var(--txt-2); }
+  .skills .row .v .sep { color: var(--txt-4); margin: 0 6px; }
 
   /* Contact rows */
-  .contact-rows .line { padding: 3px 0; }
+  .contact-rows .line { padding: 4px 0; }
 
-  /* Status bar at bottom of window */
+  /* Status bar */
   .statusbar {
     flex: 0 0 auto;
-    border-top: 0.5px solid #000;
-    background: var(--bg-2);
-    padding: 4px 14px;
-    font-size: 10.5px;
-    color: var(--dim);
+    border-top: 1px solid var(--bdr);
+    background: var(--bg-elev);
+    padding: 5px 14px;
+    font-size: 9.5px;
+    font-weight: 500;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--txt-3);
     display: flex;
     justify-content: space-between;
     gap: 12px;
   }
-  .statusbar .left, .statusbar .right { display: flex; gap: 14px; }
-  .statusbar .ok { color: var(--green); }
+  .statusbar .left, .statusbar .right { display: flex; gap: 16px; }
+  .statusbar .ok { color: var(--amber); }
   .statusbar kbd {
-    background: var(--bg-3);
-    border: 1px solid var(--rule);
-    border-radius: 3px;
-    padding: 0 4px;
-    font-size: 10px;
-    color: var(--text);
+    background: var(--surface-2);
+    border: 1px solid var(--bdr);
+    border-radius: var(--r);
+    padding: 1px 5px;
+    font-size: 9.5px;
+    color: var(--txt-2);
     font-family: var(--font-mono);
+    letter-spacing: 0;
   }
 
-  .footprompt { color: var(--dim); font-size: 12px; margin-top: 8px; }
+  .footprompt { color: var(--txt-3); font-size: 0.92em; margin-top: 6px; }
 
-  /* Scrolling within pane shouldn't propagate look ugly */
-  hr.rule { border: none; border-top: 1px dashed var(--dim-2); margin: 14px 0 10px; }
+  hr.rule { border: none; border-top: 1px solid var(--bdr); margin: 14px 0 10px; }
 
   #tweaks-root { position: fixed; bottom: 24px; right: 24px; z-index: 9999; }
 
   @media (max-width: 800px) {
     .stage { padding: 0; }
-    .window { max-height: none; border-radius: 0; }
+    .window { max-height: none; border: 0; }
     .metrics { grid-template-columns: 1fr 1fr; }
-    .skills .row { grid-template-columns: 1fr; gap: 0; padding: 6px 0; }
+    .skills .row { grid-template-columns: 1fr; gap: 0; padding: 8px 0; }
     .banner { font-size: 7.5px; }
+    .titlebar .title { display: none; }
+    .pane { padding: 20px 18px; }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .pane.active { animation: none; }
+    .cursor { animation: none; }
+    * { transition: none !important; }
   }
 </style>
 </head>
 <body>
+
+<!-- Atmosphere: masked grid + radial wash + optional scanlines -->
+<div class="atmos" aria-hidden="true">
+  <div class="atmos-grid"></div>
+  <div class="atmos-glow"></div>
+  <div class="atmos-scan"></div>
+</div>
 
 <div class="stage">
   <div class="window">
@@ -347,6 +542,7 @@
         <span class="light g"></span>
       </div>
       <div class="title">siddhant@portfolio: ~ — -zsh — 132×38</div>
+      <button class="theme-toggle" id="theme-toggle" type="button" aria-label="Toggle colour theme"></button>
     </div>
 
     <!-- Tabs -->
@@ -527,6 +723,34 @@
     if (e.key === 'ArrowLeft')  show(order[(cur - 1 + order.length) % order.length]);
   });
 })();
+
+// Light/dark toggle — persists to localStorage, mirrors px0's nav switch.
+(function() {
+  const root = document.documentElement;
+  const btn  = document.getElementById('theme-toggle');
+  if (!btn) return;
+
+  function render() {
+    const light = root.getAttribute('data-theme') === 'light';
+    btn.textContent = light ? 'dark' : 'light';
+    btn.setAttribute('aria-pressed', String(light));
+  }
+
+  new MutationObserver(render).observe(root, {
+    attributes: true, attributeFilter: ['data-theme']
+  });
+
+  btn.addEventListener('click', () => {
+    const next = root.getAttribute('data-theme') === 'light' ? 'dark' : 'light';
+    // Drop any inline palette the tweaks panel applied so the stylesheet wins.
+    if (window.__clearPalette) window.__clearPalette();
+    root.setAttribute('data-theme', next);
+    try { localStorage.setItem('theme', next); } catch (e) {}
+    render();
+  });
+
+  render();
+})();
 </script>
 
 <!-- React + Tweaks panel -->
@@ -536,77 +760,183 @@
 <script type="text/babel" src="tweaks-panel.jsx"></script>
 <script type="text/babel">
   const TWEAK_DEFAULTS = /*EDITMODE-BEGIN*/{
-    "theme": "pro",
+    "palette": "tokyo",
     "fontSize": 13,
+    "grid": true,
+    "glow": true,
     "scanlines": false
   }/*EDITMODE-END*/;
 
-  const THEMES = {
-    pro:        { bg:"#1a1614", bg2:"#221d1a", bg3:"#2a2421", rule:"#3a3330", text:"#e8e0d3", dim:"#8a807a", green:"#4eb872", yellow:"#d4b262", cyan:"#5fb8c8", magenta:"#c47fb5", red:"#d97a6a", white:"#f6f1e6" },
-    homebrew:   { bg:"#000000", bg2:"#0a1a0a", bg3:"#0e220e", rule:"#1f3f1f", text:"#28e828", dim:"#1a8a1a", green:"#7eff7e", yellow:"#a8ff7e", cyan:"#7effc8", magenta:"#7effa8", red:"#ff7e7e", white:"#e8ffe8" },
-    novel:      { bg:"#dfdbc3", bg2:"#d4cfb1", bg3:"#c8c2a0", rule:"#a89e7e", text:"#3b2f2f", dim:"#7a6b5a", green:"#3a6e3a", yellow:"#8a6420", cyan:"#2e5e7a", magenta:"#6e3a6e", red:"#8a3a2a", white:"#1f1a1a" },
-    ocean:      { bg:"#101a26", bg2:"#152130", bg3:"#1a2a3a", rule:"#2a3e54", text:"#cfe1f0", dim:"#7891a8", green:"#6fc6a8", yellow:"#e3c07b", cyan:"#7ec8e3", magenta:"#c896e3", red:"#e08e7e", white:"#f0f7fb" }
+  // Palettes follow px0's token shape: three surface steps, a foreground tint
+  // that every hairline / wash is derived from, four text steps, one accent
+  // trio, and a syntax set.
+  const PALETTES = {
+    tokyo: {
+      label: 'px0 Tokyo (dark)', mode: 'dark',
+      bg: '#06070b', bgElev: '#0b0c12', panel: '#0d0e16', fg: '#c0caf5',
+      txt: '#e4e8f7', txt2: '#9ba3c4', txt3: '#686f93', txt4: '#3a4060',
+      accent: '#fbbf24', accentSoft: '#fcd34d', accentDeep: '#f59e0b',
+      cyan: '#7dcfff', blue: '#7aa2f7', violet: '#bb9af7',
+      green: '#9ece6a', rose: '#f7768e', orange: '#ff9e64'
+    },
+    light: {
+      label: 'px0 (light)', mode: 'light',
+      bg: '#f4f5f8', bgElev: '#ffffff', panel: '#ffffff', fg: '#0b0d14',
+      txt: '#0b0d14', txt2: '#454c5e', txt3: '#6b7386', txt4: '#b3b9c6',
+      accent: '#b45309', accentSoft: '#d97706', accentDeep: '#92400e',
+      cyan: '#0550ae', blue: '#0969da', violet: '#8250df',
+      green: '#116329', rose: '#cf222e', orange: '#953800'
+    },
+    dracula: {
+      label: 'Dracula', mode: 'dark',
+      bg: '#16171f', bgElev: '#1b1d27', panel: '#21222c', fg: '#f8f8f2',
+      txt: '#f8f8f2', txt2: '#b9bcc9', txt3: '#7d819b', txt4: '#4b4e63',
+      accent: '#ffb86c', accentSoft: '#ffd39b', accentDeep: '#e59b50',
+      cyan: '#8be9fd', blue: '#8be9fd', violet: '#bd93f9',
+      green: '#50fa7b', rose: '#ff5555', orange: '#ffb86c'
+    },
+    catppuccin: {
+      label: 'Catppuccin Mocha', mode: 'dark',
+      bg: '#11111b', bgElev: '#181825', panel: '#1e1e2e', fg: '#cdd6f4',
+      txt: '#cdd6f4', txt2: '#a6adc8', txt3: '#7f849c', txt4: '#51576d',
+      accent: '#f9e2af', accentSoft: '#faecc8', accentDeep: '#e5c890',
+      cyan: '#94e2d5', blue: '#89b4fa', violet: '#cba6f7',
+      green: '#a6e3a1', rose: '#f38ba8', orange: '#fab387'
+    },
+    github: {
+      label: 'GitHub Dark', mode: 'dark',
+      bg: '#0d1117', bgElev: '#010409', panel: '#151b23', fg: '#c9d1d9',
+      txt: '#e6edf3', txt2: '#9198a1', txt3: '#6e7681', txt4: '#484f58',
+      accent: '#d29922', accentSoft: '#e3b341', accentDeep: '#bb8009',
+      cyan: '#39c5cf', blue: '#58a6ff', violet: '#bc8cff',
+      green: '#3fb950', rose: '#ff7b72', orange: '#ffa657'
+    }
   };
 
-  function applyTheme(t) {
+  // Every var applyPalette writes — kept in one list so the titlebar toggle
+  // can hand control back to the stylesheet.
+  const PALETTE_VARS = [
+    '--bg', '--bg-elev', '--panel', '--surface', '--surface-2',
+    '--bdr', '--bdr-hi', '--grid',
+    '--txt', '--txt-2', '--txt-3', '--txt-4',
+    '--amber', '--amber-soft', '--amber-deep', '--amber-wash', '--amber-line', '--amber-glow',
+    '--cyan', '--blue', '--violet', '--green', '--rose', '--orange',
+    '--glow-a', '--glow-b', '--scan-opacity', '--glow-opacity', '--shadow-float'
+  ];
+
+  window.__clearPalette = function () {
     const r = document.documentElement;
-    r.style.setProperty('--bg', t.bg);
-    r.style.setProperty('--bg-2', t.bg2);
-    r.style.setProperty('--bg-3', t.bg3);
-    r.style.setProperty('--rule', t.rule);
-    r.style.setProperty('--text', t.text);
-    r.style.setProperty('--dim', t.dim);
-    r.style.setProperty('--dim-2', t.rule);
-    r.style.setProperty('--green', t.green);
-    r.style.setProperty('--yellow', t.yellow);
-    r.style.setProperty('--cyan', t.cyan);
-    r.style.setProperty('--magenta', t.magenta);
-    r.style.setProperty('--red', t.red);
-    r.style.setProperty('--white', t.white);
+    PALETTE_VARS.forEach((v) => r.style.removeProperty(v));
+  };
+
+  function withAlpha(hex, a) {
+    const s = hex.replace('#', '');
+    const full = s.length === 3 ? s.split('').map((c) => c + c).join('') : s;
+    const n = parseInt(full, 16);
+    return 'rgba(' + ((n >> 16) & 255) + ', ' + ((n >> 8) & 255) + ', ' + (n & 255) + ', ' + a + ')';
+  }
+
+  function applyPalette(p) {
+    const r = document.documentElement;
+    const light = p.mode === 'light';
+    const set = (k, v) => r.style.setProperty(k, v);
+
+    r.setAttribute('data-theme', p.mode);
+
+    set('--bg', p.bg);
+    set('--bg-elev', p.bgElev);
+    set('--panel', p.panel);
+    set('--surface',   withAlpha(p.fg, light ? 0.024 : 0.028));
+    set('--surface-2', withAlpha(p.fg, light ? 0.05  : 0.055));
+    set('--bdr',       withAlpha(p.fg, light ? 0.10  : 0.09));
+    set('--bdr-hi',    withAlpha(p.fg, light ? 0.22  : 0.20));
+    set('--grid',      withAlpha(p.fg, light ? 0.043 : 0.035));
+
+    set('--txt', p.txt);
+    set('--txt-2', p.txt2);
+    set('--txt-3', p.txt3);
+    set('--txt-4', p.txt4);
+
+    set('--amber', p.accent);
+    set('--amber-soft', p.accentSoft);
+    set('--amber-deep', p.accentDeep);
+    set('--amber-wash', withAlpha(p.accent, light ? 0.06 : 0.07));
+    set('--amber-line', withAlpha(p.accent, light ? 0.35 : 0.32));
+    set('--amber-glow', withAlpha(p.accent, light ? 0.20 : 0.30));
+
+    set('--cyan', p.cyan);
+    set('--blue', p.blue);
+    set('--violet', p.violet);
+    set('--green', p.green);
+    set('--rose', p.rose);
+    set('--orange', p.orange);
+
+    set('--glow-a', withAlpha(p.accent, light ? 0.07 : 0.09));
+    set('--glow-b', withAlpha(p.blue,   light ? 0.07 : 0.07));
+    set('--scan-opacity', light ? '0.12' : '0.5');
+    set('--glow-opacity', light ? '0.7' : '1');
+    set('--shadow-float', light
+      ? '0 50px 100px -50px rgba(11,13,20,0.35)'
+      : '0 60px 140px -60px rgba(0,0,0,0.95)');
   }
 
   function PortfolioTweaks() {
     const [tweaks, setTweak] = window.useTweaks(TWEAK_DEFAULTS);
 
+    const firstPaletteRun = React.useRef(true);
     React.useEffect(() => {
-      applyTheme(THEMES[tweaks.theme] || THEMES.pro);
+      // Skip the mount pass: on a normal visit the stylesheet plus the stored
+      // theme own the palette. The panel only takes over once someone edits it.
+      if (firstPaletteRun.current) { firstPaletteRun.current = false; return; }
+      applyPalette(PALETTES[tweaks.palette] || PALETTES.tokyo);
+    }, [tweaks.palette]);
+
+    const firstSizeRun = React.useRef(true);
+    React.useEffect(() => {
+      // Same reasoning as the palette: an inline px value would override the
+      // stylesheet's fluid clamp() on every ordinary page load.
+      if (firstSizeRun.current) { firstSizeRun.current = false; return; }
       document.body.style.fontSize = tweaks.fontSize + 'px';
-      let s = document.getElementById('__scanlines');
-      if (tweaks.scanlines) {
-        if (!s) {
-          s = document.createElement('div');
-          s.id = '__scanlines';
-          s.style.cssText = 'position:fixed;inset:0;pointer-events:none;z-index:9000;background:repeating-linear-gradient(0deg,rgba(0,0,0,0.18) 0,rgba(0,0,0,0.18) 1px,transparent 1px,transparent 3px);mix-blend-mode:multiply;';
-          document.body.appendChild(s);
-        }
-      } else if (s) { s.remove(); }
-    }, [tweaks.theme, tweaks.fontSize, tweaks.scanlines]);
+    }, [tweaks.fontSize]);
+
+    React.useEffect(() => {
+      const grid = document.querySelector('.atmos-grid');
+      const glow = document.querySelector('.atmos-glow');
+      if (grid) grid.style.display = tweaks.grid ? '' : 'none';
+      if (glow) glow.style.display = tweaks.glow ? '' : 'none';
+      document.documentElement.setAttribute('data-scan', tweaks.scanlines ? '1' : '0');
+    }, [tweaks.grid, tweaks.glow, tweaks.scanlines]);
 
     return (
       <window.TweaksPanel title="Tweaks">
-        <window.TweakSection title="Theme">
+        <window.TweakSection label="Theme">
           <window.TweakSelect
-            label="Profile"
-            value={tweaks.theme}
-            onChange={(v) => setTweak('theme', v)}
-            options={[
-              { value: 'pro',      label: 'Pro (warm dark)' },
-              { value: 'homebrew', label: 'Homebrew (green)' },
-              { value: 'novel',    label: 'Novel (paper)' },
-              { value: 'ocean',    label: 'Ocean (blue)' }
-            ]}
+            label="Palette"
+            value={tweaks.palette}
+            onChange={(v) => setTweak('palette', v)}
+            options={Object.keys(PALETTES).map((k) => ({ value: k, label: PALETTES[k].label }))}
           />
         </window.TweakSection>
-        <window.TweakSection title="Type">
+        <window.TweakSection label="Type">
           <window.TweakSlider
             label="Font Size"
             value={tweaks.fontSize}
             onChange={(v) => setTweak('fontSize', v)}
             min={11} max={16} step={1}
-            format={(v) => v + 'pt'}
+            unit="px"
           />
         </window.TweakSection>
-        <window.TweakSection title="Effects">
+        <window.TweakSection label="Atmosphere">
+          <window.TweakToggle
+            label="Grid"
+            value={tweaks.grid}
+            onChange={(v) => setTweak('grid', v)}
+          />
+          <window.TweakToggle
+            label="Glow"
+            value={tweaks.glow}
+            onChange={(v) => setTweak('glow', v)}
+          />
           <window.TweakToggle
             label="CRT Scanlines"
             value={tweaks.scanlines}
