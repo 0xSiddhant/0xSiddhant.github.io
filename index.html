@@ -403,6 +403,7 @@
 
   .line { white-space: pre-wrap; }
   .out { color: var(--txt-2); }
+  .headline { margin: 0; font-size: inherit; font-weight: inherit; line-height: inherit; }
   .out .dim { color: var(--txt-3); }
   .out .key { color: var(--violet); }
   .out .val { color: var(--cyan); }
@@ -624,14 +625,14 @@
       <section class="pane active" data-pane="about">
         <div class="line out"><span class="dim">Last login: Fri May  8 09:42:11 on ttys000</span></div>
         <div class="line"><span class="prompt"><span class="at">~</span> <span class="arr">❯</span></span> <span class="cmd">whoami <span class="flag">--full</span></span></div>
-        <pre class="banner">  ███████╗██╗██████╗ ██████╗ ██╗  ██╗ █████╗ ███╗   ██╗████████╗
+        <pre class="banner" aria-hidden="true">  ███████╗██╗██████╗ ██████╗ ██╗  ██╗ █████╗ ███╗   ██╗████████╗
   ██╔════╝██║██╔══██╗██╔══██╗██║  ██║██╔══██╗████╗  ██║╚══██╔══╝
   ███████╗██║██║  ██║██║  ██║███████║███████║██╔██╗ ██║   ██║
   ╚════██║██║██║  ██║██║  ██║██╔══██║██╔══██║██║╚██╗██║   ██║
   ███████║██║██████╔╝██████╔╝██║  ██║██║  ██║██║ ╚████║   ██║
   ╚══════╝╚═╝╚═════╝ ╚═════╝ ╚═╝  ╚═╝╚═╝  ╚═╝╚═╝  ╚═══╝   ╚═╝   <span class="accent">K U M A R</span></pre>
 
-        <div class="line out"><span class="b">Siddhant Kumar</span> <span class="dim">// iOS Engineer · 7 yrs</span></div>
+        <h1 class="line out headline"><span class="b">Siddhant Kumar</span> <span class="dim">(</span><span class="val">0xSiddhant</span><span class="dim">) // iOS Engineer · 7 yrs</span></h1>
         <div class="line out"><span class="dim">→ Sr. Software Engineer @</span> <span class="val">INDmoney</span> <span class="dim">·</span> <span class="dim">Gurugram, IN</span></div>
         <br />
         <div class="line"><span class="prompt"><span class="at">~</span> <span class="arr">❯</span></span> <span class="cmd">cat <span class="str">about.md</span></span></div>
