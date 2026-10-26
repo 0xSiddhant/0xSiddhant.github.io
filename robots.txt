@@ -1,5 +1,4 @@
 User-agent: *
 Allow: /
-Disallow: /resume/Siddhant_Resume.pdf
 
 Sitemap: https://www.0xsiddhant.com/sitemap.xml
